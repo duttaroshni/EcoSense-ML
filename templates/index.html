@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>EcoSense — Ecosystem Stability Monitor</title>
+
+<!-- Fonts: IBM Plex pair + Bebas Neue display -->
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<!-- Dashboard stylesheet -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}"/>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER
+     ═══════════════════════════════════════════════════════════ -->
+<header id="app-header">
+  <div class="header-left">
+    <a class="logo-mark" href="#">
+      <div class="logo-icon">
+        <div class="logo-ring"></div>
+        <div class="logo-ring"></div>
+        <div class="logo-core"></div>
+      </div>
+      <div>
+        <div class="logo-text">ECOSENSE</div>
+        <div class="logo-sub">Stability Monitor</div>
+      </div>
+    </a>
+    <div class="header-divider"></div>
+    <div class="header-badge">
+      <div class="status-dot"></div>
+      ML Pipeline Active
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="header-stat">
+      <span class="header-stat-label">Data Period</span>
+      <span class="header-stat-value">2013 – 2020</span>
+    </div>
+    <div class="header-stat">
+      <span class="header-stat-label">Framework</span>
+      <span class="header-stat-value">Random Forest</span>
+    </div>
+    <div id="live-clock">00:00:00</div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO
+     ═══════════════════════════════════════════════════════════ -->
+<section class="hero">
+  <div class="hero-eyebrow">
+    <div class="eyebrow-line"></div>
+    <span class="eyebrow-text">ML-Powered Decision Support System</span>
+  </div>
+  <h1>ECOSYSTEM <span class="hl">STABILITY</span><br>&amp; <span class="hl2">COLLAPSE RISK</span></h1>
+  <div class="hero-meta">
+    <p class="hero-desc">
+      Long-term machine learning analysis of aquatic and terrestrial ecosystem health.
+      Early-warning detection, stability scoring, what-if simulation, and
+      feature explainability for conservation planning.
+    </p>
+    <div class="hero-sdg">
+      <div class="sdg-pill sdg-14">🐠 SDG 14 · Life Below Water</div>
+      <div class="sdg-pill sdg-15">🌲 SDG 15 · Life on Land</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION TABS
+     ═══════════════════════════════════════════════════════════ -->
+<nav class="nav-tabs">
+  <button class="tab-btn active" data-tab="aquatic"
+          onclick="App.switchTab('aquatic')">
+    <span class="tab-icon">🌊</span> Aquatic
+    <span class="tab-badge">ML</span>
+  </button>
+  <button class="tab-btn" data-tab="terrestrial"
+          onclick="App.switchTab('terrestrial')">
+    <span class="tab-icon">🌿</span> Terrestrial
+    <span class="tab-badge">ML</span>
+  </button>
+  <button class="tab-btn" data-tab="combined"
+          onclick="App.switchTab('combined')">
+    <span class="tab-icon">🌍</span> Combined
+    <span class="tab-badge">FUSION</span>
+  </button>
+  <button class="tab-btn" data-tab="simulate"
+          onclick="App.switchTab('simulate')">
+    <span class="tab-icon">⚗️</span> Simulate
+    <span class="tab-badge">WHAT-IF</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN PANELS
+     ═══════════════════════════════════════════════════════════ -->
+<main id="main-content">
+
+  <!-- ── AQUATIC ── -->
+  <div id="panel-aquatic" class="tab-panel active">
+    <div id="aquatic-panel"></div>
+  </div>
+
+  <!-- ── TERRESTRIAL ── -->
+  <div id="panel-terrestrial" class="tab-panel">
+    <div id="terrestrial-panel"></div>
+  </div>
+
+  <!-- ── COMBINED ── -->
+  <div id="panel-combined" class="tab-panel">
+    <div id="combined-panel"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SIMULATE PANEL  (fully static HTML)
+       ═══════════════════════════════════════════════════════════ -->
+  <div id="panel-simulate" class="tab-panel">
+
+    <div class="section-header" style="margin-bottom:1rem">
+      <span class="section-title">What-If Scenario Simulation</span>
+      <span class="panel-meta">Adjust indicators to see projected stability changes</span>
+    </div>
+
+    <div class="sim-layout">
+
+      <!-- AQUATIC SIM -->
+      <div class="sim-panel" id="aq-sim-panel">
+        <div class="sim-panel-header">
+          <span class="sim-panel-icon">🌊</span>
+          <span class="sim-panel-title">AQUATIC SIMULATION</span>
+        </div>
+        <div class="sim-body">
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">Fish Capture Change</span>
+              <span class="slider-val" id="aq-capture-val">0%</span>
+            </div>
+            <input type="range" id="aq-capture" min="-50" max="50" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>&#8722;50% (reduce)</span><span>+50% (increase)</span>
+            </div>
+          </div>
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">Water Temperature Change</span>
+              <span class="slider-val" id="aq-temp-val">0%</span>
+            </div>
+            <input type="range" id="aq-temp" min="-30" max="30" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>&#8722;30% (cooler)</span><span>+30% (warmer)</span>
+            </div>
+          </div>
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">Turbidity Change</span>
+              <span class="slider-val" id="aq-turbidity-val">0%</span>
+            </div>
+            <input type="range" id="aq-turbidity" min="-40" max="40" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>&#8722;40% (clearer)</span><span>+40% (murkier)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:0.5rem;margin-top:1rem">
+            <button class="run-btn" id="aq-run-btn" onclick="App.runAquaticSim()">&#9654; RUN SIMULATION</button>
+            <button class="reset-btn" onclick="App.resetAquaticSim()">&#8635; Reset</button>
+          </div>
+
+          <div class="sim-results" id="aq-sim-results"></div>
+        </div>
+      </div>
+
+      <!-- TERRESTRIAL SIM -->
+      <div class="sim-panel" id="te-sim-panel">
+        <div class="sim-panel-header">
+          <span class="sim-panel-icon">🌿</span>
+          <span class="sim-panel-title">TERRESTRIAL SIMULATION</span>
+        </div>
+        <div class="sim-body">
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">Temperature Reduction</span>
+              <span class="slider-val" id="te-temp-val">+0%</span>
+            </div>
+            <input type="range" id="te-temp" min="0" max="50" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>0% (no change)</span><span>+50% (reduction)</span>
+            </div>
+          </div>
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">CO&#8322; Level Reduction</span>
+              <span class="slider-val" id="te-co2-val">+0%</span>
+            </div>
+            <input type="range" id="te-co2" min="0" max="50" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>0% (baseline)</span><span>+50% (reduction)</span>
+            </div>
+          </div>
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">Deforestation Reduction</span>
+              <span class="slider-val" id="te-deforest-val">+0%</span>
+            </div>
+            <input type="range" id="te-deforest" min="0" max="50" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>0% (no change)</span><span>+50% (less pressure)</span>
+            </div>
+          </div>
+
+          <div class="slider-block">
+            <div class="slider-meta">
+              <span class="slider-name">Soil Moisture Increase</span>
+              <span class="slider-val" id="te-soil-val">+0%</span>
+            </div>
+            <input type="range" id="te-soil" min="0" max="50" value="0"/>
+            <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:0.5rem;color:var(--text-muted);margin-top:2px">
+              <span>0% (baseline)</span><span>+50% (wetter)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:0.5rem;margin-top:1rem">
+            <button class="run-btn" id="te-run-btn" onclick="App.runTerrestrialSim()">&#9654; RUN SIMULATION</button>
+            <button class="reset-btn" onclick="App.resetTerrestrialSim()">&#8635; Reset</button>
+          </div>
+
+          <div class="sim-results" id="te-sim-results"></div>
+        </div>
+      </div>
+
+    </div><!-- /sim-layout -->
+
+    <!-- HOW IT WORKS -->
+    <div class="panel-card" style="margin-bottom:1.5rem">
+      <div class="panel-header">
+        <span class="panel-title">
+          <span class="panel-title-dot" style="background:#6366f1"></span>
+          How Simulation Works
+        </span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1.25rem;padding-top:0.5rem">
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.58rem;color:var(--accent);margin-bottom:5px;letter-spacing:0.1em">01 &#183; MODIFY</div>
+          <div style="font-size:0.82rem;color:var(--text-sub);line-height:1.65">
+            Sliders adjust raw indicator values in the original dataset before re-processing.
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.58rem;color:var(--accent);margin-bottom:5px;letter-spacing:0.1em">02 &#183; RE-SCALE</div>
+          <div style="font-size:0.82rem;color:var(--text-sub);line-height:1.65">
+            MinMaxScaler normalises the modified data. The weighted stability index is recomputed.
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.58rem;color:var(--accent);margin-bottom:5px;letter-spacing:0.1em">03 &#183; PREDICT</div>
+          <div style="font-size:0.82rem;color:var(--text-sub);line-height:1.65">
+            The trained Random Forest model predicts stability on the modified data.
+          </div>
+        </div>
+        <div>
+          <div style="font-family:var(--font-mono);font-size:0.58rem;color:var(--accent);margin-bottom:5px;letter-spacing:0.1em">04 &#183; COMPARE</div>
+          <div style="font-size:0.82rem;color:var(--text-sub);line-height:1.65">
+            Delta (&#916;) shows the projected improvement or decline vs. the unmodified baseline.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-strip">
+      <div class="footer-left">
+        <div class="sdg-pill sdg-14">🐠 SDG 14 &#183; Life Below Water</div>
+        <div class="sdg-pill sdg-15">🌲 SDG 15 &#183; Life on Land</div>
+        <div class="ml-badge">&#9881; RandomForest</div>
+        <div class="ml-badge">&#9881; MinMaxScaler</div>
+        <div class="ml-badge">&#9881; LinearRegression</div>
+      </div>
+      <div class="footer-right">ECOSENSE v1.0 &#183; 2025</div>
+    </div>
+
+  </div><!-- /panel-simulate -->
+
+</main>
+
+<!-- Dashboard JS -->
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
