@@ -1,7 +1,52 @@
 # 🌿 EcoSense — Ecosystem Stability & Collapse Risk Assessment
 
-> ML-based decision-support system for ecosystem health monitoring.  
+> Machine Learning-powered ecosystem stability prediction and collapse-risk assessment platform with explainable analytics and scenario-based simulation.
 > Supports **SDG 14** (Life Below Water) and **SDG 15** (Life on Land).
+
+## Overview
+
+EcoSense is a machine learning-based ecosystem stability and collapse risk assessment platform designed to support SDG 14 (Life Below Water) and SDG 15 (Life on Land).
+
+The platform analyses 18 environmental indicators across aquatic and terrestrial ecosystems to estimate ecosystem stability, predict collapse risk, generate explainable insights, and support scenario-based environmental decision making.
+
+## Dashboard Preview
+
+### Overview Dashboard
+<img width="1600" height="899" alt="image" src="https://github.com/user-attachments/assets/61afab32-8a22-4946-8000-b5da79175949" />
+
+### Analytics Dashboard
+<img width="1600" height="818" alt="image" src="https://github.com/user-attachments/assets/23324e42-e85a-479e-98bc-1e2c3ebcf17f" />
+
+### Scenario Simulation
+<img width="1600" height="899" alt="image" src="https://github.com/user-attachments/assets/dbe4321c-3c13-43b3-9bf4-7cd033cf0cd6" />
+
+
+### Key Features
+
+* Ecosystem stability prediction and collapse risk assessment using Random Forest and XGBoost models
+* Analysis of 18 environmental indicators across aquatic and terrestrial ecosystems
+* 5 engineered ecosystem health metrics, including Stability Index, Biomass Index, Bioflux Index, Resilience Score, and Collapse Risk Score
+* Feature-importance analysis for model explainability
+* Early-warning risk classification using trend and volatility analysis
+* Interactive what-if simulation framework for environmental scenario testing
+
+### Results
+
+* Achieved R² up to 0.95 and MAE as low as 0.036
+* Generated ecosystem stability and collapse-risk predictions across aquatic and terrestrial ecosystems
+* Built an explainable ML pipeline with feature-importance analysis and trend forecasting
+* Enabled scenario-based simulations for evaluating environmental intervention strategies
+
+## Technologies Used
+
+* Python
+* Scikit-learn
+* Random Forest
+* XGBoost
+* Pandas
+* NumPy
+* Flask
+* HTML/CSS
 
 ---
 
